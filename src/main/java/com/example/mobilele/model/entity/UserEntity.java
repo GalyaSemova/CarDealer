@@ -1,8 +1,10 @@
 package com.example.mobilele.model.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "users")
 public class UserEntity extends BaseEntity{
 
     private String email;
