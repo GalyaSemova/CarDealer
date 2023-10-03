@@ -11,12 +11,17 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+        defer-datasource-initialization: true
         format_sql: true
     hibernate:
       ddl-auto: update
   sql:
     init:
       mode: never
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 
 default:
   admin:
