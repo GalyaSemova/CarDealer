@@ -14,49 +14,50 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final CurrentUser currentUser;
+//    private final CurrentUser currentUser;
 
     public UserServiceImpl(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            CurrentUser currentUser) {
+            PasswordEncoder passwordEncoder
+           ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.currentUser = currentUser;
+//        this.currentUser = currentUser;
     }
 
     @Override
     public void registerUser(UserRegistrationDTO userRegistrationDTO) {
+
         userRepository.save(map(userRegistrationDTO));
     }
 
-    @Override
-    public boolean loginUser(UserLoginDTO userLoginDTO) {
-
-        var userEntity = userRepository
-                .findByEmail(userLoginDTO.email())
-                .orElse(null);
-
-        boolean loginSuccess = false;
-        String encodedPassword = userEntity.getPassword();
-
-        if(userEntity != null) {
-            String rawPassword = userLoginDTO.password();
-
-           loginSuccess =  (encodedPassword != null) &&
-                   passwordEncoder.matches(rawPassword, encodedPassword);
-
-           if(loginSuccess) {
-               currentUser.setLogged(true);
-               currentUser.setFirstName(userEntity.getFirstName());
-               currentUser.setLastName(userEntity.getLastName());
-           } else {
-               currentUser.logout();
-           }
-        }
-
-
-        return loginSuccess;
+//    @Override
+//    public boolean loginUser(UserLoginDTO userLoginDTO) {
+//
+//        var userEntity = userRepository
+//                .findByEmail(userLoginDTO.email())
+//                .orElse(null);
+//
+//        boolean loginSuccess = false;
+//        String encodedPassword = userEntity.getPassword();
+//
+//        if(userEntity != null) {
+//            String rawPassword = userLoginDTO.password();
+//
+//           loginSuccess =  (encodedPassword != null) &&
+//                   passwordEncoder.matches(rawPassword, encodedPassword);
+//
+//           if(loginSuccess) {
+//               currentUser.setLogged(true);
+//               currentUser.setFirstName(userEntity.getFirstName());
+//               currentUser.setLastName(userEntity.getLastName());
+//           } else {
+//               currentUser.logout();
+//           }
+//        }
+//
+//
+//        return loginSuccess;
 
 
 //        return (encodedPassword != null) ?
@@ -68,12 +69,12 @@ public class UserServiceImpl implements UserService {
 //        } else {
 //            return false;
 //        }
-    }
+//    }
 
-    @Override
-    public void logoutUser() {
-        currentUser.logout();
-    }
+//    @Override
+//    public void logoutUser() {
+//        currentUser.logout();
+//    }
 
     private UserEntity map(UserRegistrationDTO userRegistrationDTO) {
         UserEntity userEntity = new UserEntity();

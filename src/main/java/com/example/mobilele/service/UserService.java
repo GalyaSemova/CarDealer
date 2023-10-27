@@ -6,6 +6,6 @@ import com.example.mobilele.model.dto.UserRegistrationDTO;
 public interface UserService {
 
     void registerUser(UserRegistrationDTO userRegistrationDTO);
-    boolean loginUser(UserLoginDTO userLoginDTO);
-    void logoutUser();
+//    boolean loginUser(UserLoginDTO userLoginDTO);
+//    void logoutUser();
 }

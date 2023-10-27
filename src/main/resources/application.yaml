@@ -35,3 +35,4 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.type.descriptor: TRACE
+    org.springframework.security: TRACE
