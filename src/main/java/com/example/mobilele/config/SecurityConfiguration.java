@@ -1,7 +1,10 @@
 package com.example.mobilele.config;
 
+import com.example.mobilele.model.entity.UserRoleEntity;
+import com.example.mobilele.model.enums.UserRoleEnum;
 import com.example.mobilele.repository.UserRepository;
 import com.example.mobilele.service.impl.MobileleUserDetailsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +17,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfiguration {
 
+    private final String rememberMeKey;
+
+    public SecurityConfiguration(@Value("${mobilele.remember.me.key}")
+                                 String rememberMeKey) {
+        this.rememberMeKey = rememberMeKey;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(
+       return httpSecurity.authorizeHttpRequests(
 //Define which urls are visible by which users
                 authorizeRequests -> authorizeRequests
 //  All static resources which are situated in js, images, css are available for anyone
@@ -24,6 +34,7 @@ public class SecurityConfiguration {
 //Allows anyone to see the home page, the registration and login page
                         .requestMatchers("/","/users/login", "/users/register", "/users/login-error").permitAll()
                         .requestMatchers("/offers/all").permitAll()
+                        .requestMatchers("/brands").hasRole(UserRoleEnum.ADMIN.name())
 //                        All other requests are authenticated
                         .anyRequest().authenticated()
         ).formLogin(
@@ -48,9 +59,15 @@ public class SecurityConfiguration {
 //                            invalidate the HTTP session
                             .invalidateHttpSession(true);
                 }
-        );
-//        TODO: remember me!
-       return httpSecurity.build();
+        ).rememberMe(
+                rememberMe -> {
+                    rememberMe
+                            .key(rememberMeKey)
+                            .rememberMeParameter("rememberme")
+                            .rememberMeCookieName("rememberme");
+                }
+       ).build();
+
     }
 
     @Bean
