@@ -39,6 +39,21 @@ public class OfferEntity extends BaseEntity{
     @Min(1930)
     private int year;
 
+    public OfferEntity() {
+    }
+
+    public OfferEntity(@NotNull UUID uuid, String description, @NotNull ModelEntity model, @NotNull EnginEnum engine, @NotNull TransmissionEnum transmission, String imageUrl, int mileage, @NotNull BigDecimal price, int year) {
+        this.uuid = uuid;
+        this.description = description;
+        this.model = model;
+        this.engine = engine;
+        this.transmission = transmission;
+        this.imageUrl = imageUrl;
+        this.mileage = mileage;
+        this.price = price;
+        this.year = year;
+    }
+
     public String getDescription() {
         return description;
     }

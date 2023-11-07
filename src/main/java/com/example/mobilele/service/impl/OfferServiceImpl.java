@@ -72,9 +72,7 @@ public class OfferServiceImpl implements OfferService {
                 offerEntity.getPrice(),
                 offerEntity.getEngine(),
                 offerEntity.getTransmission(),
-                offerEntity.getImageUrl()
-        );
-
+                offerEntity.getImageUrl());
     }
 
     private static OfferDetailDTO mapAsDetails(OfferEntity offerEntity) {

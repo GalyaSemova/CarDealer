@@ -24,12 +24,14 @@ public class OffersController {
     public String all(Model model,
                       @PageableDefault(
                               size = 3,
-                              sort= "uuid"
-                      )
-                      Pageable pageable) {
+                              sort = "uuid"
+                      ) Pageable pageable) {
 
         Page<OfferSummaryDTO> allOffers = offerService.getAllOffers(pageable);
+
         model.addAttribute("offers", allOffers);
+
         return "offers";
     }
+
 }

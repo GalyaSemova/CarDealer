@@ -57,7 +57,7 @@ public class OfferController {
 
         UUID newOfferUUID = offerService.createOffer(createOfferDTO);
 
-        return "redirect:/offer/" + newOfferUUID + "/details";
+        return "redirect:/offer/" + newOfferUUID;
     }
 
     @GetMapping("/{uuid}")
