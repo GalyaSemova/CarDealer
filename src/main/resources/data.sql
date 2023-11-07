@@ -19,3 +19,23 @@
 # VALUES
 #     (2, 'ADMIN'),
 #     (3, 'USER');
+# INSERT INTO `mobilele`.`brands` (`id`, `brand`)
+# VALUES ('3', 'Trabant');
+
+# insert into `mobilele`.`models`(`id`,`model_category`, `name`, `brand_id`)
+# values (1, 'CAR', '601', 3);
+
+insert into `mobilele`.`offers`(`id`, `description`, `engine`,
+                                `image_url`, `mileage`, `price`, `transmission`, `uuid`, `year`, `model_id`)
+
+values (3, 'trabi super', 'PETROL', 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Trabant_1.1_30.06.19_JM_1.jpg/1200px-Trabant_1.1_30.06.19_JM_1.jpg',
+        30005, 100, 'MANUAL', '9d3e0343-6a6c-4788-a5c8-3f6d42f43eak', 1987, 1),
+       (4, 'trabi', 'PETROL', 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Trabant_1.1_30.06.19_JM_1.jpg/1200px-Trabant_1.1_30.06.19_JM_1.jpg',
+        2000000, 1000, 'MANUAL', '9d3e0343-6a6c-4788-a5c8-3f6d42f43eal', 1986, 1),
+       (5, 'extra', 'PETROL', 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Trabant_1.1_30.06.19_JM_1.jpg/1200px-Trabant_1.1_30.06.19_JM_1.jpg',
+        300, 100000, 'MANUAL', '9d3e0343-6a6c-4788-a5c8-3f6d42f43eaz', 1980, 1),
+       (6, 'trabi bla', 'PETROL', 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Trabant_1.1_30.06.19_JM_1.jpg/1200px-Trabant_1.1_30.06.19_JM_1.jpg',
+        3005, 1000000, 'MANUAL', '9d3e0343-6a6c-4788-a5c8-3f6d42f43eap', 1989, 1);
+
+
+

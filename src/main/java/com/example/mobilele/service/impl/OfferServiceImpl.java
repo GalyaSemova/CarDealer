@@ -1,14 +1,21 @@
 package com.example.mobilele.service.impl;
 
 import com.example.mobilele.model.dto.CreateOfferDTO;
+import com.example.mobilele.model.dto.OfferDetailDTO;
+import com.example.mobilele.model.dto.OfferSummaryDTO;
 import com.example.mobilele.model.entity.ModelEntity;
 import com.example.mobilele.model.entity.OfferEntity;
 import com.example.mobilele.repository.ModelRepository;
 import com.example.mobilele.repository.OfferRepository;
 import com.example.mobilele.service.OfferService;
+import com.example.mobilele.service.exception.ObjectNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,6 +40,57 @@ public class OfferServiceImpl implements OfferService {
         newOffer = offerRepository.save(newOffer);
 
         return newOffer.getUuid();
+    }
+
+    @Override
+    public Page<OfferSummaryDTO> getAllOffers(Pageable pageable) {
+        return offerRepository
+                .findAll(pageable)
+                .map(OfferServiceImpl::mapAsSummary);
+    }
+
+    @Override
+    public Optional<OfferDetailDTO> getOfferDetail(UUID offerUUID) {
+        return offerRepository.findByUuid(offerUUID)
+                .map(OfferServiceImpl::mapAsDetails);
+    }
+
+    @Override
+    @Transactional
+    public void deleteOffer(UUID offerUUID) {
+        offerRepository.deleteByUuid(offerUUID);
+
+    }
+
+    private static OfferSummaryDTO mapAsSummary(OfferEntity offerEntity) {
+        return new OfferSummaryDTO(
+                offerEntity.getUuid().toString(),
+                offerEntity.getModel().getBrand().getBrand(),
+                offerEntity.getModel().getName(),
+                offerEntity.getYear(),
+                offerEntity.getMileage(),
+                offerEntity.getPrice(),
+                offerEntity.getEngine(),
+                offerEntity.getTransmission(),
+                offerEntity.getImageUrl()
+        );
+
+    }
+
+    private static OfferDetailDTO mapAsDetails(OfferEntity offerEntity) {
+//        TODO: reuse
+        return new OfferDetailDTO(
+                offerEntity.getUuid().toString(),
+                offerEntity.getModel().getBrand().getBrand(),
+                offerEntity.getModel().getName(),
+                offerEntity.getYear(),
+                offerEntity.getMileage(),
+                offerEntity.getPrice(),
+                offerEntity.getEngine(),
+                offerEntity.getTransmission(),
+                offerEntity.getImageUrl()
+        );
+
     }
 
     private OfferEntity map(CreateOfferDTO createOfferDTO) {
