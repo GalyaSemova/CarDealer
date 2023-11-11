@@ -2,7 +2,8 @@
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/mobilele?useSSL=false&createDatabaseIfNotExist=true
+#    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/mobilele?useSSL=false&createDatabaseIfNotExist=true
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/mobilele?allowPublicKeyRetrieval=true
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:fondle}
 
@@ -36,3 +37,10 @@ logging:
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.type.descriptor: TRACE
     org.springframework.security: TRACE
+
+mail:
+  mobilele: "mobilele@example.com"
+  host: localhost
+  port: 1025
+  username: ${MAIL_USER:fondle}
+  password: ${MAIL_PASSWORD:fondle}

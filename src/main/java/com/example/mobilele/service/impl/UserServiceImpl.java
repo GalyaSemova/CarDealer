@@ -1,11 +1,11 @@
 package com.example.mobilele.service.impl;
 
-import com.example.mobilele.model.dto.UserLoginDTO;
 import com.example.mobilele.model.dto.UserRegistrationDTO;
 import com.example.mobilele.model.entity.UserEntity;
+import com.example.mobilele.model.events.UserRegisterEvent;
 import com.example.mobilele.repository.UserRepository;
 import com.example.mobilele.service.UserService;
-import com.example.mobilele.util.CurrentUser;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,19 +16,28 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 //    private final CurrentUser currentUser;
 
+    private final ApplicationEventPublisher appEventPublisher;
+
     public UserServiceImpl(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder
-           ) {
+            PasswordEncoder passwordEncoder,
+            ApplicationEventPublisher appEventPublisher) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
 //        this.currentUser = currentUser;
+        this.appEventPublisher = appEventPublisher;
     }
 
     @Override
     public void registerUser(UserRegistrationDTO userRegistrationDTO) {
 
         userRepository.save(map(userRegistrationDTO));
+
+        appEventPublisher.publishEvent(new UserRegisterEvent(
+                "UserService",
+                userRegistrationDTO.email(),
+                userRegistrationDTO.fullName()
+        ));
     }
 
 //    @Override
@@ -78,7 +87,7 @@ public class UserServiceImpl implements UserService {
 
     private UserEntity map(UserRegistrationDTO userRegistrationDTO) {
         UserEntity userEntity = new UserEntity();
-        userEntity.setActive(true);
+        userEntity.setActive(false);
         userEntity.setFirstName(userRegistrationDTO.firstName());
         userEntity.setLastName(userRegistrationDTO.lastName());
         userEntity.setEmail(userRegistrationDTO.email());
