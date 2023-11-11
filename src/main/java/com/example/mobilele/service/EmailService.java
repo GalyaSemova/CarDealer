@@ -4,5 +4,6 @@ public interface EmailService {
 
     void sendRegistrationEmail(
             String userEmail,
-            String userName);
+            String userName,
+            String activationCode);
 }
