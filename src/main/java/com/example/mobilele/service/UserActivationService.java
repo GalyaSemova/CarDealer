@@ -5,4 +5,6 @@ import com.example.mobilele.model.events.UserRegisterEvent;
 public interface UserActivationService {
 
     void userRegistered(UserRegisterEvent event);
+
+    void cleanUpObsoleteActivationLinks();
 }
