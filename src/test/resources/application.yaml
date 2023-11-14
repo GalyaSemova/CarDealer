@@ -1,0 +1,35 @@
+# Data Source Properties
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: never
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+mobilele:
+  default.admin.pass: topsecret
+  remember.me.key: topsecret
+
+# Logging Levels
+logging:
+  level:
+    org: WARN
+    blog: WARN
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.type.descriptor: TRACE
+    org.springframework.security: TRACE
+
+mail:
+  mobilele: "mobilele@example.com"
+  host: localhost
+  port: 3333
+  username: test@example.com
+  password: topsecret
