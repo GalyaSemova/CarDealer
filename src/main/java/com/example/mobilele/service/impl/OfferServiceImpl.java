@@ -5,13 +5,16 @@ import com.example.mobilele.model.dto.OfferDetailDTO;
 import com.example.mobilele.model.dto.OfferSummaryDTO;
 import com.example.mobilele.model.entity.ModelEntity;
 import com.example.mobilele.model.entity.OfferEntity;
+import com.example.mobilele.model.entity.UserEntity;
 import com.example.mobilele.repository.ModelRepository;
 import com.example.mobilele.repository.OfferRepository;
+import com.example.mobilele.repository.UserRepository;
 import com.example.mobilele.service.OfferService;
-import com.example.mobilele.service.exception.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,19 +26,27 @@ public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
     private final ModelRepository modelRepository;
+    private final UserRepository userRepository;
 
-    public OfferServiceImpl(OfferRepository offerRepository, ModelRepository modelRepository) {
+    public OfferServiceImpl(OfferRepository offerRepository, ModelRepository modelRepository, UserRepository userRepository) {
         this.offerRepository = offerRepository;
         this.modelRepository = modelRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public UUID createOffer(CreateOfferDTO createOfferDTO) {
+    public UUID createOffer(CreateOfferDTO createOfferDTO, UserDetails seller) {
         OfferEntity newOffer = map(createOfferDTO);
-        ModelEntity modelEntity = modelRepository.findById(createOfferDTO.getModelId())
-                .orElseThrow(() -> new IllegalArgumentException("Model with id " + createOfferDTO.getModelId() +
+        ModelEntity modelEntity = modelRepository.findById(createOfferDTO.modelId())
+                .orElseThrow(() -> new IllegalArgumentException("Model with id " + createOfferDTO.modelId() +
                         " not found"));
+
+        UserEntity sellerEntity = userRepository.findByEmail(seller.getUsername())
+                .orElseThrow(()->
+                        new IllegalArgumentException("User with email " + seller.getUsername() + " was not found!"));
+
         newOffer.setModel(modelEntity);
+        newOffer.setSeller(sellerEntity);
 
         newOffer = offerRepository.save(newOffer);
 
@@ -94,13 +105,13 @@ public class OfferServiceImpl implements OfferService {
     private OfferEntity map(CreateOfferDTO createOfferDTO) {
         OfferEntity offer = new OfferEntity();
         offer.setUuid(UUID.randomUUID());
-        offer.setDescription(createOfferDTO.getDescription());
-        offer.setEngine(createOfferDTO.getEngine());
-        offer.setMileage(createOfferDTO.getMileage());
-        offer.setTransmission(createOfferDTO.getTransmission());
-        offer.setImageUrl(createOfferDTO.getImageUrl());
-        offer.setPrice(BigDecimal.valueOf(createOfferDTO.getPrice()));
-        offer.setYear(createOfferDTO.getYear());
+        offer.setDescription(createOfferDTO.description());
+        offer.setEngine(createOfferDTO.engine());
+        offer.setMileage(createOfferDTO.mileage());
+        offer.setTransmission(createOfferDTO.transmission());
+        offer.setImageUrl(createOfferDTO.imageUrl());
+        offer.setPrice(BigDecimal.valueOf(createOfferDTO.price()));
+        offer.setYear(createOfferDTO.year());
 
         return offer;
     }

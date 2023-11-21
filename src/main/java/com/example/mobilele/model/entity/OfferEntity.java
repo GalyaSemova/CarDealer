@@ -30,6 +30,10 @@ public class OfferEntity extends BaseEntity{
     @NotNull
     @Enumerated(EnumType.STRING)
     private TransmissionEnum transmission;
+
+    @ManyToOne
+    private UserEntity seller;
+
     @NotEmpty
     private String imageUrl;
     @Positive
@@ -52,6 +56,14 @@ public class OfferEntity extends BaseEntity{
         this.mileage = mileage;
         this.price = price;
         this.year = year;
+    }
+
+    public UserEntity getSeller() {
+        return seller;
+    }
+
+    public void setSeller(UserEntity seller) {
+        this.seller = seller;
     }
 
     public String getDescription() {
