@@ -20,6 +20,8 @@ public interface OfferService {
 
     void deleteOffer(UUID offerUUID);
 
+    boolean isOwner(UUID uuid, String userName);
+
 
 
 

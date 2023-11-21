@@ -74,6 +74,7 @@ public class OfferServiceImpl implements OfferService {
 
     }
 
+
     private static OfferSummaryDTO mapAsSummary(OfferEntity offerEntity) {
         return new OfferSummaryDTO(
                 offerEntity.getUuid().toString(),
@@ -100,17 +101,25 @@ public class OfferServiceImpl implements OfferService {
                 offerEntity.getTransmission(),
                 offerEntity.getImageUrl(),
                 offerEntity.getSeller().getFirstName(),
-                isOwner(offerEntity, viewer)
+                isOwner(offerEntity, viewer != null ? viewer.getUsername() : null)
         );
     }
 
-    private boolean isOwner(OfferEntity offerEntity, UserDetails viewer) {
-        if (viewer == null) {
+    @Override
+    public boolean isOwner(UUID uuid, String userName) {
+
+        return isOwner(offerRepository.findByUuid(uuid)
+                .orElse(null),userName);
+    }
+
+    private boolean isOwner(OfferEntity offerEntity, String username) {
+        if (offerEntity == null || username == null) {
 //            anonymous users own no offers
+//            missing offers are meaningless
             return  false;
         }
         UserEntity viewerEntity =
-                userRepository.findByEmail(viewer.getUsername())
+                userRepository.findByEmail(username)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown user..."));
 
         if (isAdmin(viewerEntity)) {
