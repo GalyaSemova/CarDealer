@@ -6,6 +6,7 @@ import com.example.mobilele.model.dto.OfferSummaryDTO;
 import com.example.mobilele.model.entity.ModelEntity;
 import com.example.mobilele.model.entity.OfferEntity;
 import com.example.mobilele.model.entity.UserEntity;
+import com.example.mobilele.model.enums.UserRoleEnum;
 import com.example.mobilele.repository.ModelRepository;
 import com.example.mobilele.repository.OfferRepository;
 import com.example.mobilele.repository.UserRepository;
@@ -14,10 +15,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,9 +62,9 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public Optional<OfferDetailDTO> getOfferDetail(UUID offerUUID) {
+    public Optional<OfferDetailDTO> getOfferDetail(UUID offerUUID, UserDetails viewer) {
         return offerRepository.findByUuid(offerUUID)
-                .map(OfferServiceImpl::mapAsDetails);
+                .map(o -> this.mapAsDetails(o, viewer));
     }
 
     @Override
@@ -86,8 +87,8 @@ public class OfferServiceImpl implements OfferService {
                 offerEntity.getImageUrl());
     }
 
-    private static OfferDetailDTO mapAsDetails(OfferEntity offerEntity) {
-//        TODO: reuse
+    private OfferDetailDTO mapAsDetails(OfferEntity offerEntity, UserDetails viewer) {
+
         return new OfferDetailDTO(
                 offerEntity.getUuid().toString(),
                 offerEntity.getModel().getBrand().getBrand(),
@@ -97,9 +98,34 @@ public class OfferServiceImpl implements OfferService {
                 offerEntity.getPrice(),
                 offerEntity.getEngine(),
                 offerEntity.getTransmission(),
-                offerEntity.getImageUrl()
+                offerEntity.getImageUrl(),
+                offerEntity.getSeller().getFirstName(),
+                isOwner(offerEntity, viewer)
         );
+    }
 
+    private boolean isOwner(OfferEntity offerEntity, UserDetails viewer) {
+        if (viewer == null) {
+//            anonymous users own no offers
+            return  false;
+        }
+        UserEntity viewerEntity =
+                userRepository.findByEmail(viewer.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("Unknown user..."));
+
+        if (isAdmin(viewerEntity)) {
+//            all admins own all offers
+            return true;
+        }
+        return Objects
+                .equals(offerEntity.getSeller().getId(),
+                        viewerEntity.getId());
+    }
+    private boolean isAdmin(UserEntity userEntity) {
+        return userEntity.getRoles()
+                .stream()
+                .map(r -> r.getRole())
+                .anyMatch(r -> UserRoleEnum.ADMIN == r);
     }
 
     private OfferEntity map(CreateOfferDTO createOfferDTO) {
