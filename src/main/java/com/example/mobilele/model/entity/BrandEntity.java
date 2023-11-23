@@ -18,6 +18,7 @@ public class BrandEntity extends BaseEntity{
     private String brand;
     @OneToMany(
             fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
             mappedBy = "brand")
 //    @Fetch(value = FetchMode.SUBSELECT)
     private List<ModelEntity> models;
