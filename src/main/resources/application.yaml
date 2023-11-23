@@ -44,3 +44,7 @@ mail:
   port: 1025
   username: ${MAIL_USER:fondle}
   password: ${MAIL_PASSWORD:fondle}
+
+  google.recaptcha:
+    site: ${RECAPTCHA_SITE_KEY:test}
+    secret: ${RECAPTCHA_SITE_SECRET:test}
