@@ -105,7 +105,19 @@ public class OfferControllerTestIT {
 
     }
 
-    void testAdminUserNotOwnedOffer() {
+    @Test
+    @WithMockUser(
+            username = TEST_ADMIN_EMAIL,
+            roles = {"USER", "ADMIN"})
+    void testAdminUserNotOwnedOffer() throws Exception {
+        UserEntity owner = userTestDataUtil.createTestUser(TEST_USER1_EMAIL);
+        userTestDataUtil.createTestAdmin(TEST_ADMIN_EMAIL);
+        OfferEntity offerEntity = testDataUtil.createTestOffer(owner);
 
+        mockMvc.perform(
+                        delete("/offer/{uuid}", offerEntity.getUuid())
+                                .with(csrf())
+                ).andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/offers/all"));
     }
 }
